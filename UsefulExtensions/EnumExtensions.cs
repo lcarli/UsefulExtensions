@@ -81,8 +81,6 @@ namespace UsefulExtensions
             }
         }
 
-      
-
         public static string ToCommaSeparatedIntegerList(this Enum type)
         {
             return string.Join(",", type.ToList<int>().ConvertAll(i => i.ToString()).ToArray());
