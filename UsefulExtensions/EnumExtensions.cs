@@ -16,14 +16,16 @@ namespace UsefulExtensions
             var values = Enum.GetValues(enumType);
             foreach (var value in values)
             {
-                var memInfo = enumType.GetMember(enumType.GetEnumName(value));
-                var descriptionAttributes = memInfo[0].GetCustomAttributes(typeof(DescriptionAttribute), false);
-                var description = descriptionAttributes.Length > 0
-                    ? ((DescriptionAttribute)descriptionAttributes.First()).Description
-                    : value.ToString();
+                var description = value.GetDescription() ?? value.ToString();
                 result.Add(description, value.ToString());
             }
             return result;
+        }
+
+        public static List<KeyValuePair<int, string>> ToKeyValuePairs<T>(this Enum instance)
+        {
+            return Enum.GetValues(typeof(T)).Cast<T>().Select(item =>
+                new KeyValuePair<int, string>(Convert.ToInt32(item), item.GetDescription())).OrderBy(item => item.Key).ToList();
         }
 
         public static List<T> ToList<T>(this Enum type)
@@ -79,11 +81,7 @@ namespace UsefulExtensions
             }
         }
 
-        public static List<KeyValuePair<int, string>> ToKeyValuePairs<T>(this Enum instance)
-        {
-            return Enum.GetValues(typeof(T)).Cast<T>().Select(item =>
-                new KeyValuePair<int, string>(Convert.ToInt32(item), item.GetDescription())).OrderBy(item => item.Key).ToList();
-        }
+      
 
         public static string ToCommaSeparatedIntegerList(this Enum type)
         {
