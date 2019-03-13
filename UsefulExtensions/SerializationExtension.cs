@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Xml.Serialization;
 
@@ -53,6 +54,31 @@ namespace UsefulExtensions
             }
 
             return result;
+        }
+
+        public static void ToBinary<T>(this T obj, string path)
+        {
+            using (StreamWriter sw = new StreamWriter(path))
+            {
+                BinaryFormatter serializer = new BinaryFormatter();
+                serializer.Serialize(sw.BaseStream, obj);
+            }
+        }
+
+        public static T FromBinary<T>(string path)
+        {
+            try
+            {
+                using (StreamReader sr = new StreamReader(path))
+                {
+                    BinaryFormatter serializer = new BinaryFormatter();
+                    return (T)serializer.Deserialize(sr.BaseStream);
+                }
+            }
+            catch (Exception)
+            {
+                return default;
+            }
         }
     }
 }
